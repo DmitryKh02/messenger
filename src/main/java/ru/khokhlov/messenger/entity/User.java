@@ -4,10 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import ru.khokhlov.messenger.enums.Status;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
-
 
 @Data
 @Entity
@@ -33,18 +32,24 @@ public class User {
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "second_name")
-    private String secondName;
+    @Column(name = "middle_name")
+    private String middleName;
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
     @Column(name = "birthday")
-    private Date birthday;
+    private Timestamp birthday;
 
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private Status status;
+
+    @Column(name = "is_account_active")
+    private boolean accountActivity;
+
+    @Column(name = "delete_timestamp")
+    private Timestamp deleteTimestamp;
 
     @ManyToMany
     @JoinTable(

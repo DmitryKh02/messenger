@@ -2,18 +2,12 @@ package ru.khokhlov.messenger.exception;
 
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 public class InvalidDataException extends RuntimeException{
-    private final List<ErrorMessage> errorMessage;
+    private final ErrorMessage errorMessage;
 
-    public InvalidDataException(List<ErrorMessage> errorMessage) {
+    public InvalidDataException(ErrorMessage errorMessage) {
         super();
         this.errorMessage = errorMessage;
-    }
-
-    public List<ErrorMessage> getInvalidFields() {
-        return errorMessage;
     }
 }

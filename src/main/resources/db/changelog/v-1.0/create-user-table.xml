@@ -12,7 +12,7 @@
                 activation_code varchar(255),
                 password varchar(255) NOT NULL,
                 first_name varchar(255) NOT NULL,
-                second_name varchar(255),
+                middle_name varchar(255),
                 last_name varchar(255) NOT NULL,
                 birthday timestamp,
                 status varchar(255),
