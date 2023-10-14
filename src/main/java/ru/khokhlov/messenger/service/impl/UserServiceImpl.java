@@ -6,31 +6,29 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.khokhlov.messenger.dto.request.BasicUserInformation;
 import ru.khokhlov.messenger.dto.request.NewPassword;
 import ru.khokhlov.messenger.dto.request.RegistrationFormDTO;
 import ru.khokhlov.messenger.dto.request.UserDTO;
 import ru.khokhlov.messenger.dto.response.UserResponse;
+import ru.khokhlov.messenger.entity.Role;
 import ru.khokhlov.messenger.entity.User;
 import ru.khokhlov.messenger.exception.ErrorMessage;
 import ru.khokhlov.messenger.exception.InvalidDataException;
 import ru.khokhlov.messenger.mapper.UserMapper;
 import ru.khokhlov.messenger.repository.UserRepository;
 import ru.khokhlov.messenger.service.MailSender;
+import ru.khokhlov.messenger.service.RoleService;
 import ru.khokhlov.messenger.service.UserService;
 import ru.khokhlov.messenger.utils.PasswordEncoder;
 
 import java.sql.Timestamp;
-
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -40,6 +38,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private int deleteDay;
     private final UserMapper userMapper;
     private final UserRepository userRepository;
+    private final RoleService roleService;
     private final MailSender mailSender;
 
     @Override
@@ -47,15 +46,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.trace("UserServiceImpl.createUser - userRegistrationInfo {}", userRegistrationInfo);
 
         if (userRepository.findByEmail(userRegistrationInfo.email()) != null) {
-            throw new EntityExistsException("User with email: " + userRegistrationInfo.email() + " already exist!");
+            throw new EntityExistsException("User with email: " + userRegistrationInfo.email() + " already exists!");
         }
         if (userRepository.findByNickname(userRegistrationInfo.nickname()) != null) {
-            throw new EntityExistsException("User with nickname: " + userRegistrationInfo.nickname() + " already exist!");
+            throw new EntityExistsException("User with nickname: " + userRegistrationInfo.nickname() + " already exists!");
         }
 
         User user = userMapper.fromRegistrationDTOToUser(userRegistrationInfo);
         user.setActivationCode(generateActivationCode());
-        user.setAccountActivity(true);
+        user.setRole(roleService.getRoleByName("USER"));
         userRepository.saveAndFlush(user);
 
         mailSender.activateEmail(user);
@@ -65,11 +64,36 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String username) throws EntityNotFoundException {
+        log.trace("UserServiceImpl.loadUserByUsername - username {}", username);
+        User user = userRepository.findByNickname(username);
+
+        if (user == null ){
+            throw new EntityNotFoundException("User with nickname " + username + "not found");
+        }
+
+        List<Role> roleList = new ArrayList<>();
+        roleList.add(user.getRole());
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getNickname(),
+                user.getPassword(),
+                roleList.stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList()
+        );
+    }
+
+    @Override
     public UserResponse updateUserInformation(BasicUserInformation userInfo) throws EntityNotFoundException {
         log.trace("UserServiceImpl.createUser - userInfo {}", userInfo);
 
         User user = userRepository.getReferenceById(userInfo.userId());
-        updateUserBasicInfo(user, userInfo);
+
+        if (!Objects.equals(userInfo.email(), user.getEmail())) {
+            mailSender.activateEmail(user);
+        }
+
+        userMapper.updateUser(userInfo,user);
         userRepository.saveAndFlush(user);
 
         log.trace("UserServiceImpl.createUser - user {}", user);
@@ -87,7 +111,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         if (!Objects.equals(password.newPassword(), password.newConfirmedPassword())) {
-            throw new InvalidDataException(new ErrorMessage("New password", "New password and new confirmed password not equals!"));
+            throw new InvalidDataException(new ErrorMessage("New password", "New password and new confirmed password are not equal!"));
         }
 
         user.setPassword(PasswordEncoder.getEncryptedPassword(password.newPassword()));
@@ -137,11 +161,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
         }
 
-        log.trace("UserServiceImpl.deleteConfirmation - usersToDelete {}", userList);
         if (!userList.isEmpty()) {
             userRepository.deleteAll(usersToDelete);
         }
 
+        log.trace("UserServiceImpl.deleteConfirmation - usersToDelete {}", userList);
         return usersToDelete.size();
     }
 
@@ -151,7 +175,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findByActivationCode(code);
 
         if (user == null) {
-            throw new EntityNotFoundException("This code is not exists!");
+            throw new EntityNotFoundException("This code does not exist!");
         }
 
         user.setActivationCode(null);
@@ -176,28 +200,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return user;
     }
 
-    private void updateUserBasicInfo(User userFromDB, BasicUserInformation userInfo) {
-        log.trace("UserServiceImpl.checkPassword - userFromDB {}, userInfo {}", userFromDB, userInfo);
-
-        if (!Objects.equals(userFromDB.getEmail(), userInfo.email())) {
-            mailSender.activateEmail(userFromDB);
-            userFromDB.setEmail(userInfo.email());
-        }
-
-        userFromDB.setNickname(userInfo.nickname());
-        userFromDB.setFirstName(userInfo.firstName());
-        userFromDB.setLastName(userInfo.lastName());
-
-        if (userInfo.middleName() != null) {
-            userFromDB.setMiddleName(userInfo.middleName());
-        }
-
-        userFromDB.setBirthday(Timestamp.valueOf(userInfo.birthday().atStartOfDay()));
-        userFromDB.setStatus(userInfo.status());
-
-        log.trace("UserServiceImpl.checkPassword - user {}", userFromDB);
-    }
-
     private String generateActivationCode() {
         log.debug("UserServiceImpl.generateActivationCode");
 
@@ -213,34 +215,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         log.debug("UserServiceImpl.generateActivationCode - activationCode {}", activationCode);
         return activationCode;
-    }
-
-    @Override
-    public UserResponse authUser(RegistrationFormDTO registrationFormDTO, String token) throws EntityNotFoundException {
-        log.trace("UserServiceImpl.authUser - authFormDTO {}, token {}", registrationFormDTO, token);
-
-        User user = userRepository.findByNicknameAndPassword(registrationFormDTO.email(), registrationFormDTO.password());
-        return null;
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, EntityNotFoundException {
-        log.trace("UserServiceImpl.loadUserByUsername - username {}", username);
-        User user;
-
-        try {
-            user = userRepository.findByNickname(username);
-        } catch (Exception exception) {
-            throw new EntityNotFoundException("User with email " + username + "not found");
-        }
-
-        return null;
-
-//        return new User(
-//                user.getEmail(),
-//                user.getPassword(),
-//                Collections.singleton(user.getRoleEnum())
-//        );
     }
 }

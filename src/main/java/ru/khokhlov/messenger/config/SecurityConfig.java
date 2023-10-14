@@ -15,6 +15,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.khokhlov.messenger.service.impl.UserServiceImpl;
 
 @Configuration
@@ -23,33 +24,39 @@ import ru.khokhlov.messenger.service.impl.UserServiceImpl;
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final UserServiceImpl userService;
+    private final JwtRequestFilter jwtRequestFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authorizeHttpRequests -> authorizeHttpRequests
-                                .anyRequest().permitAll())
-//                                .requestMatchers("/**").hasRole("USER")
-//                                .requestMatchers("/**").hasRole("ADMIN").anyRequest().permitAll())
-
+                                .requestMatchers("/user/**")//.authenticated()
+                                .hasAuthority("USER")
+                                .anyRequest().permitAll()
+                )
                 .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        sessionManagement ->
+                                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .exceptionHandling(
-                        exceptionHandling -> exceptionHandling.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
-        // addFilterBefore()...
-        return httpSecurity.build();
+                        exceptionHandling ->
+                                exceptionHandling.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                )
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 
     @Bean
-    public BCryptPasswordEncoder getPasswordEncoder(){
+    public BCryptPasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider(){
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
         daoAuthenticationProvider.setUserDetailsService(userService);

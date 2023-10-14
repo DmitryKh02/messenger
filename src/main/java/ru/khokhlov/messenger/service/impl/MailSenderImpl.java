@@ -9,6 +9,7 @@ import ru.khokhlov.messenger.entity.User;
 import ru.khokhlov.messenger.service.MailSender;
 import ru.khokhlov.messenger.utils.MessageCreator;
 
+//TODO переделать sender писем
 @Service
 @RequiredArgsConstructor
 public class MailSenderImpl implements MailSender {
@@ -17,13 +18,15 @@ public class MailSenderImpl implements MailSender {
 
     @Value(value = "${application.email.address}")
     private String organization;
+    @Value(value = "${application.server.address.auth}")
+    private String auth;
 
     @Override
     public void activateEmail(User user) {
         String subject = "Подтверждение E-mail";
         String text = messageCreator.createWelcomeMessage(
                 user.getNickname(),
-                "/user",
+                auth,
                 user.getActivationCode());
 
         send(user.getEmail(), subject,text);

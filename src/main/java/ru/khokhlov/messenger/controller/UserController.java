@@ -28,8 +28,6 @@ import ru.khokhlov.messenger.utils.JwtTokenUtils;
 @Tag(name = "Контроллер пользователя", description = "Всё, что связанно с клиентами")
 public class UserController {
     private final UserService userService;
-    private final JwtTokenUtils jwtTokenUtils;
-    private final AuthenticationManager authenticationManager;
 
     @Operation(
             summary = "Регистрация пользователя",
@@ -69,34 +67,5 @@ public class UserController {
     @PutMapping(value = "/restore")
     public ResponseEntity<UserResponse> restoreUser(@Parameter(description = "Информация о клиенте") @Valid @RequestBody UserDTO user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.restoreUser(user));
-    }
-
-
-    @Hidden
-    @Operation(
-            summary = "Получение токена авторизации",
-            description = "Позволяет получить токен для взаимодействия с системой")
-    @PostMapping("/auth")
-    public ResponseEntity<Token> createAuthToken(@Parameter(description = "Форма авторизации") @Valid @RequestBody RegistrationFormDTO registrationFormDTO) {
-        //TODO понять, как работает эта функция
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(registrationFormDTO.email(), registrationFormDTO.password()));
-
-        UserDetails userDetails = userService.loadUserByUsername(registrationFormDTO.email());
-        String token = jwtTokenUtils.generateToken(userDetails);
-
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new Token("Bearer", token));
-    }
-
-    @Hidden
-    @GetMapping("/activate/{code}")
-    public String activationEmail(@PathVariable String code) {
-        boolean isActivated = userService.isEmailActivate(code);
-        String message = "Такого кода активации не существует!";
-
-        if (isActivated) {
-            message = "Вы подтвердили свой e-mail и можете закрывать эту страницу";
-        }
-
-        return message;
     }
 }

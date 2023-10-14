@@ -2,6 +2,7 @@ package ru.khokhlov.messenger.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
 import ru.khokhlov.messenger.enums.Status;
 
 import java.sql.Timestamp;
@@ -51,6 +52,10 @@ public class User {
     @Column(name = "delete_timestamp")
     private Timestamp deleteTimestamp;
 
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
+
     @ManyToMany
     @JoinTable(
             name = "friends",
@@ -58,4 +63,5 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> favorites = new HashSet<>();
+
 }
