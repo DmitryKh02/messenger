@@ -101,16 +101,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserResponse updateUserInformation(BasicUserInformation userInfo) throws EntityNotFoundException {
+    public UserResponse updateUserInformation(String nickname, BasicUserInformation userInfo) throws EntityNotFoundException {
         log.trace("UserServiceImpl.createUser - userInfo {}", userInfo);
 
-        User user = userRepository.getReferenceById(userInfo.userId());
+        User user = userRepository.findByNickname(nickname);
+
+        userMapper.updateUser(userInfo,user);
 
         if (!Objects.equals(userInfo.email(), user.getEmail())) {
+            user.setActivationCode(generateActivationCode());
             mailSender.activateEmail(user);
         }
 
-        userMapper.updateUser(userInfo,user);
         userRepository.saveAndFlush(user);
 
         log.trace("UserServiceImpl.createUser - user {}", user);
@@ -118,10 +120,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserResponse updateUserPassword(NewPassword password) throws InvalidDataException {
+    public UserResponse updateUserPassword(String nickname, NewPassword password) throws InvalidDataException {
         log.trace("UserServiceImpl.updateUserPassword - password {}", password);
 
-        User user = userRepository.getReferenceById(password.userId());
+        User user = userRepository.findByNickname(nickname);
 
         if (!PasswordEncoder.isPasswordsAreEquals(password.oldPassword(), user.getPassword())) {
             throw new InvalidDataException(new ErrorMessage("Old Password", "Incorrect old password"));

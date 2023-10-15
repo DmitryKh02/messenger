@@ -1,0 +1,18 @@
+services:
+  postgres-db:
+    image: postgres
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  messenger:
+    image: messenger
+    container_name: messenger-application
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-db

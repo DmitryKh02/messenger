@@ -10,11 +10,6 @@ import org.springframework.validation.annotation.Validated;
 
 @Validated
 public record NewPassword(
-        @Schema(description = "Id пользователя")
-        @NotNull(message = "Id is mandatory")
-        @JsonProperty("user_id")
-        Long userId,
-
         @Schema(description = "Старый пароль")
         @Pattern(regexp = "^(?=.*[a-zа-я])(?=.*[A-ZА-Я])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$", message = "Invalid old password format")
         @NotBlank(message = "Password is mandatory")

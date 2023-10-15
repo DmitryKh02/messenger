@@ -40,11 +40,8 @@ dependencies {
 	annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
 	annotationProcessor ("org.projectlombok:lombok:1.18.22")
 
-
 	//developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	runtimeOnly("org.postgresql:postgresql")
-
-
 
 	testImplementation("org.awaitility:awaitility:3.1.2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")

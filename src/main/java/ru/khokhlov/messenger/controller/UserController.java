@@ -15,6 +15,8 @@ import ru.khokhlov.messenger.dto.request.UserDTO;
 import ru.khokhlov.messenger.dto.response.UserResponse;
 import ru.khokhlov.messenger.service.UserService;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -34,8 +36,9 @@ public class UserController {
     )
     @PutMapping(value = "/update-info")
     public ResponseEntity<UserResponse> updateUserInformation(
+            @Parameter(description = "The current user") Principal principal,
             @Parameter(description = "User information to update") @Valid @RequestBody BasicUserInformation userInfo) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateUserInformation(userInfo));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateUserInformation(principal.getName(),userInfo));
     }
 
     /**
@@ -50,8 +53,9 @@ public class UserController {
     )
     @PutMapping(value = "/update-password")
     public ResponseEntity<UserResponse> updateUserPassword(
+            @Parameter(description = "The current user") Principal principal,
             @Parameter(description = "New password information") @Valid @RequestBody NewPassword password) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateUserPassword(password));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.updateUserPassword(principal.getName(), password));
     }
 
     /**

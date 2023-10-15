@@ -37,18 +37,20 @@ public interface UserService {
     /**
      * Updates a user's basic information.
      *
+     * @param nickname user login
      * @param userInfo The updated basic user information.
      * @return A UserResponse containing the updated user details.
      */
-    UserResponse updateUserInformation(BasicUserInformation userInfo);
+    UserResponse updateUserInformation(String nickname, BasicUserInformation userInfo);
 
     /**
      * Updates a user's password.
      *
+     * @param nickname user login
      * @param password The new password for the user.
      * @return A UserResponse indicating the success of the password update.
      */
-    UserResponse updateUserPassword(NewPassword password);
+    UserResponse updateUserPassword(String nickname, NewPassword password);
 
     /**
      * Deletes a user's account.

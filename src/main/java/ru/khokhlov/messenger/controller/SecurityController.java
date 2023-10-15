@@ -12,7 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import ru.khokhlov.messenger.dto.Token;
+import ru.khokhlov.messenger.dto.response.Token;
 import ru.khokhlov.messenger.dto.request.RegistrationFormDTO;
 import ru.khokhlov.messenger.dto.request.UserDTO;
 import ru.khokhlov.messenger.dto.response.ExitResponse;

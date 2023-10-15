@@ -9,7 +9,6 @@ import ru.khokhlov.messenger.entity.User;
 import ru.khokhlov.messenger.service.MailSender;
 import ru.khokhlov.messenger.utils.MessageCreator;
 
-//TODO переделать sender писем
 @Service
 @RequiredArgsConstructor
 public class MailSenderImpl implements MailSender {

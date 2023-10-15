@@ -11,11 +11,6 @@ import java.time.LocalDate;
 
 @Validated
 public record BasicUserInformation(
-        @Schema(description = "Id пользователя")
-        @NotNull(message = "Id is mandatory")
-        @JsonProperty("user_id")
-        Long userId,
-
         @Email
         @Schema(description = "Email")
         @NotBlank(message = "Email is mandatory")

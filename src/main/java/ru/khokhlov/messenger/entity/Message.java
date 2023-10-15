@@ -28,11 +28,4 @@ public class Message {
 
     @Column(name = "sent_at")
     private Timestamp sentAt;
-
-//    public Message(User sender, User recipient, String content, Timestamp sentAt){
-//        this.sender = sender;
-//        this.recipient = recipient;
-//        this.content = content;
-//        this.sentAt = sentAt;
-//    }
 }
