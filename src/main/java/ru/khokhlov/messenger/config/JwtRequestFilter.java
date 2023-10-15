@@ -13,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.khokhlov.messenger.exception.InvalidDataException;
 import ru.khokhlov.messenger.utils.JwtTokenUtils;
 
 import java.io.IOException;

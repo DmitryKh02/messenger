@@ -14,7 +14,6 @@ import ru.khokhlov.messenger.dto.request.BasicUserInformation;
 import ru.khokhlov.messenger.dto.request.NewPassword;
 import ru.khokhlov.messenger.dto.request.RegistrationFormDTO;
 import ru.khokhlov.messenger.dto.request.UserDTO;
-import ru.khokhlov.messenger.dto.response.ExitResponse;
 import ru.khokhlov.messenger.dto.response.UserResponse;
 import ru.khokhlov.messenger.entity.Role;
 import ru.khokhlov.messenger.entity.User;
