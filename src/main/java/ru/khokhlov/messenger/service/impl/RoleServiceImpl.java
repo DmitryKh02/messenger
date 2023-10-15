@@ -12,8 +12,6 @@ import ru.khokhlov.messenger.service.RoleService;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
-
-    //TODO написать нормальную логику
     @Override
     public Role getRoleByName(String name){
         return roleRepository.findByName(name);

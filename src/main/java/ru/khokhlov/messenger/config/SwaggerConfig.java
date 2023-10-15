@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.info.Info;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Biletka API",
-                description = "Билетная система ", version = "0.1.4",
+                title = "Messenger API",
+                description = "Мессенджер для общения пользователей", version = "0.1.4",
                 contact = @Contact(
-                        name = "Biletka Group",
+                        name = "Messenger Group",
                         email = "DmitryXox02@yandex.ru"
                 )
         )

@@ -14,6 +14,7 @@ import ru.khokhlov.messenger.dto.request.BasicUserInformation;
 import ru.khokhlov.messenger.dto.request.NewPassword;
 import ru.khokhlov.messenger.dto.request.RegistrationFormDTO;
 import ru.khokhlov.messenger.dto.request.UserDTO;
+import ru.khokhlov.messenger.dto.response.ExitResponse;
 import ru.khokhlov.messenger.dto.response.UserResponse;
 import ru.khokhlov.messenger.entity.Role;
 import ru.khokhlov.messenger.entity.User;
@@ -28,7 +29,10 @@ import ru.khokhlov.messenger.utils.PasswordEncoder;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -64,13 +68,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User getUserByNickname(String nickname) throws EntityNotFoundException {
+        log.trace("UserServiceImpl.getUserByNickname - nickname {}", nickname);
+        User user = userRepository.findByNickname(nickname);
+
+        if (user == null){
+            throw new EntityNotFoundException("User with nickname " + nickname + "not found");
+        }
+
+        log.trace("UserServiceImpl.getUserByNickname - user {}", user);
+        return user;
+    }
+
+    @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws EntityNotFoundException {
-        log.trace("UserServiceImpl.loadUserByUsername - username {}", username);
-        User user = userRepository.findByNickname(username);
+    public UserDetails loadUserByUsername(String nickname) throws EntityNotFoundException {
+        log.trace("UserServiceImpl.loadUserByUsername - nickname {}", nickname);
+        User user = userRepository.findByNickname(nickname);
 
         if (user == null ){
-            throw new EntityNotFoundException("User with nickname " + username + "not found");
+            throw new EntityNotFoundException("User with nickname " + nickname + "not found");
         }
 
         List<Role> roleList = new ArrayList<>();

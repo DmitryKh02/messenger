@@ -13,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.khokhlov.messenger.exception.InvalidDataException;
 import ru.khokhlov.messenger.utils.JwtTokenUtils;
 
 import java.io.IOException;
@@ -33,13 +34,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             try {
                 nickname = jwtTokenUtils.getUsernameFromToken(jwt);
             } catch (ExpiredJwtException exception) {
-                //TODO переписать логи на англ
-                log.error("Время жизни токена вышло");
-                //TODO сделать проброс исключения
-                //throw new TokenLifetimeExpiredException("Время жизни токена вышло");
+                log.error("JwtRequestFilter.doFilterInternal - Token lifetime is over");
             }
             catch (SignatureException e){
-                log.error("Неверная подпись");
+                log.error("Wrong signature");
             }
         }
 

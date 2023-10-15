@@ -2,7 +2,6 @@ package ru.khokhlov.messenger.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 import ru.khokhlov.messenger.enums.Status;
 
 import java.sql.Timestamp;
@@ -62,6 +61,16 @@ public class User {
             joinColumns = @JoinColumn(name = "friend_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<User> favorites = new HashSet<>();
+    private Set<User> friends = new HashSet<>();
 
+
+    public void addFriends(User friend) {
+        if (friends == null) {
+            friends = new HashSet<>();
+        }
+
+        if (friend != null) {
+            friends.add(friend);
+        }
+    }
 }

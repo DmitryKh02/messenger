@@ -8,21 +8,23 @@
         <dbms type="postgresql"/>
     </preConditions>
 
-    <changeSet id="0" author="Dmitrii">
-        <tagDatabase tag="db_init"/>
+    <changeSet id="10.10.2023.db_init" author="Dmitrii">
+        <tagDatabase tag="v-1.0"/>
     </changeSet>
+    <include file="v-1.0/db.10.10.2023-changelog-v.1.0.xml" relativeToChangelogFile="true"/>
 
-    <include file="v-1.0/db.changelog-v.1.0.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="1" author="Dmitrii">
-        <tagDatabase tag="add_user_account_status"/>
+    <changeSet id="11.10.2023.add_user_account_status" author="Dmitrii">
+        <tagDatabase tag="v-1.1"/>
     </changeSet>
+    <include file="v-1.1/db.11.10.2023-changelog-v.1.1.xml" relativeToChangelogFile="true"/>
 
-    <include file="v-1.1/db.changelog-v.1.1.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="2" author="Dmitrii">
-        <tagDatabase tag="add_roles"/>
+    <changeSet id="12.10.2023.add_roles" author="Dmitrii">
+        <tagDatabase tag="v-1.2"/>
     </changeSet>
+    <include file="v-1.2/db.12.10.2023-changelog-v.1.2.xml" relativeToChangelogFile="true"/>
 
-    <include file="v-1.2/db.changelog-v.1.2.xml" relativeToChangelogFile="true"/>
+    <changeSet id="13.10.2023.add_group_and_messages" author="Dmitrii">
+        <tagDatabase tag="v-1.3"/>
+    </changeSet>
+    <include file="v-1.3/db.13.10.2023-changelog-v.1.3.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

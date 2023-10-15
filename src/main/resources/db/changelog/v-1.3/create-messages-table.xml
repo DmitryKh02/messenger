@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="create-user-table" author="Dmitrii">
+        <sql>
+            CREATE TABLE IF NOT EXISTS public.messages
+            (
+                message_id bigserial NOT NULL,
+                sender_id bigint NOT NULL,
+                recipient_id bigint NOT NULL,
+                content varchar(1024) NOT NULL,
+                sent_at timestamp DEFAULT NOW(),
+                CONSTRAINT message_pkey PRIMARY KEY (message_id),
+                CONSTRAINT gtbwebgsldhbsuhhfitbdsghuds FOREIGN KEY (sender_id)
+                REFERENCES public.users (user_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION,
+                CONSTRAINT sdfhsahjdhfaljshkjhafsjkhsd FOREIGN KEY (recipient_id)
+                REFERENCES public.users (user_id) MATCH SIMPLE
+                ON UPDATE NO ACTION
+                ON DELETE NO ACTION
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -11,6 +11,7 @@
                 CONSTRAINT roles_pkey PRIMARY KEY (role_id)
             );
 
+            INSERT INTO roles (name) VALUES ('USER'), ('ADMIN');
         </sql>
     </changeSet>
 </databaseChangeLog>

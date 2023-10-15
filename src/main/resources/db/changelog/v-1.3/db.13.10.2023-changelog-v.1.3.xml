@@ -5,6 +5,5 @@
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
 
-    <include file="create-chat-table.xml" relativeToChangelogFile="true"/>
-    <include file="alter-role-fk-column.xml" relativeToChangelogFile="true"/>
+    <include file="create-messages-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
