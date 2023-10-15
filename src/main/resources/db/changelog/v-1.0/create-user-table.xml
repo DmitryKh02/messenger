@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+    <changeSet id="create-user-table" author="Dmitrii">
+        <sql>
+            CREATE TABLE IF NOT EXISTS public.users
+            (
+                user_id bigserial NOT NULL ,
+                nickname varchar(255) NOT NULL,
+                email varchar(255) NOT NULL,
+                activation_code varchar(255),
+                password varchar(255) NOT NULL,
+                first_name varchar(255) NOT NULL,
+                middle_name varchar(255),
+                last_name varchar(255) NOT NULL,
+                birthday timestamp,
+                status varchar(255),
+                CONSTRAINT users_pkey PRIMARY KEY (user_id),
+                CONSTRAINT email_unique UNIQUE (email)
+            );
+
+        </sql>
+    </changeSet>
+</databaseChangeLog>
