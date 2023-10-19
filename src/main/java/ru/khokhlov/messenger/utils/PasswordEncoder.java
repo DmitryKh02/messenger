@@ -13,7 +13,11 @@ public class PasswordEncoder {
         return encoder.encode(password);
     }
 
-    public static boolean isPasswordsAreEquals(String rawPassword, String encodePassword){
-        return encoder.matches(rawPassword, encodePassword);
+    public static boolean arePasswordsEquals(String rawPassword, String encodePassword){
+        return !encoder.matches(rawPassword, encodePassword);
+    }
+
+    public BCryptPasswordEncoder getEncoder(){
+        return encoder;
     }
 }
