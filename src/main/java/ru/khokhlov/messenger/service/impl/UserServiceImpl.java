@@ -124,7 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = userRepository.findByNickname(nickname);
 
-        if (!PasswordEncoder.isPasswordsAreEquals(password.oldPassword(), user.getPassword())) {
+        if (PasswordEncoder.arePasswordsEquals(password.oldPassword(), user.getPassword())) {
             throw new InvalidDataException(new ErrorMessage("Old Password", "Incorrect old password"));
         }
 
@@ -211,7 +211,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                     + " not found!");
         }
 
-        if (!PasswordEncoder.isPasswordsAreEquals(userDTO.password(), user.getPassword())){
+        if (PasswordEncoder.arePasswordsEquals(userDTO.password(), user.getPassword())){
+            log.warn("UserServiceImpl.checkUser - passwords are not equals");
             throw new InvalidDataException(new ErrorMessage("Password", "Wrong password!"));
         }
 
@@ -227,8 +228,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         while (!isCodeUniq) {
             activationCode = UUID.randomUUID().toString();
 
-            if (userRepository.findByActivationCode(activationCode) == null)
+            if (userRepository.findByActivationCode(activationCode) == null) {
                 isCodeUniq = true;
+            }
         }
 
         log.debug("UserServiceImpl.generateActivationCode - activationCode {}", activationCode);

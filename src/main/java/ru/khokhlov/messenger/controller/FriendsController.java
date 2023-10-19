@@ -8,13 +8,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.khokhlov.messenger.dto.request.FriendDTO;
+import ru.khokhlov.messenger.dto.response.FriendsList;
 import ru.khokhlov.messenger.dto.response.UserResponse;
-import ru.khokhlov.messenger.service.FriendsServer;
+import ru.khokhlov.messenger.service.FriendsService;
 
 import java.security.Principal;
 
@@ -23,7 +21,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @Tag(name = "Friends Interaction Controller", description = "Friends and related actions")
 public class FriendsController {
-    private final FriendsServer friendsServer;
+    private final FriendsService friendsService;
 
     /**
      * Adds a user to the friend list by nickname.
@@ -39,7 +37,25 @@ public class FriendsController {
     @PostMapping(value = "/add")
     public ResponseEntity<UserResponse> addFriend(
             @Parameter(description = "The principal user") Principal principal,
-            @Parameter(description = "Friend information") @Valid @RequestBody FriendDTO friendDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(friendsServer.addFriend(principal.getName(), friendDTO.friend()));
+            @Parameter(description = "Friend information") @Valid @RequestBody FriendDTO friendDTO
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(friendsService.addFriend(principal.getName(), friendDTO.friend()));
+    }
+
+    /**
+     * Retrieves the list of friends for the principal user.
+     *
+     * @param principal The principal user.
+     * @return A FriendsList containing the list of friends.
+     */
+    @Operation(
+            summary = "Get Friends",
+            description = "Retrieves the list of friends for the principal user."
+    )
+    @GetMapping(value = "/get")
+    public ResponseEntity<FriendsList> getFriends(
+            @Parameter(description = "The principal user") Principal principal
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendsService.getAllFriends(principal.getName()));
     }
 }

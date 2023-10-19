@@ -18,6 +18,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import ru.khokhlov.messenger.service.impl.UserServiceImpl;
+import ru.khokhlov.messenger.utils.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -26,6 +27,7 @@ import ru.khokhlov.messenger.service.impl.UserServiceImpl;
 public class SecurityConfig {
     private final UserServiceImpl userService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -46,7 +48,6 @@ public class SecurityConfig {
                         auth.requestMatchers("/user/**").hasAuthority("USER")
                                 .requestMatchers("/messages/**").hasAuthority("USER")
                                 .requestMatchers("/friends/**").hasAuthority("USER")
-//                                .requestMatchers("/security/**").permitAll()
                                 .anyRequest().permitAll()
                 );
 
@@ -57,14 +58,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public BCryptPasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(getPasswordEncoder());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder.getEncoder());
         daoAuthenticationProvider.setUserDetailsService(userService);
         return daoAuthenticationProvider;
     }

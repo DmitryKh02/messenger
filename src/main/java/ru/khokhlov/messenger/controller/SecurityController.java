@@ -25,7 +25,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/security")
 @RequiredArgsConstructor
-@Tag(name = "User Controller", description = "Everything related to clients")
+@Tag(name = "Security Controller", description = "Everything related to security")
 public class SecurityController {
     private final UserService userService;
     private final JwtTokenUtils jwtTokenUtils;

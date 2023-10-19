@@ -6,9 +6,9 @@ import java.util.List;
 
 public record MessageHistory(
         @Schema(description = "First writer")
-        String biba,
+        String sender,
         @Schema(description = "Second writer")
-        String boba,
+        String recipient,
         @Schema(description = "List of messages")
         List<MessageInfo> messageList
 ) {

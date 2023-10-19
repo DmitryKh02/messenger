@@ -33,6 +33,7 @@ This is a simple Messenger application built using Spring Boot and PostgreSQL. I
 ### Friends Controller
 
 - **Add Friend:** Allows users to add friends by providing their friend's nickname. (POST /friends/add)
+- **Get all Friends:** Get list of friends by user's nickname. (GET /friends/get)
 
 ### Messages Controller
 
@@ -43,17 +44,12 @@ This is a simple Messenger application built using Spring Boot and PostgreSQL. I
 
 You can access Swagger documentation for the available APIs at `http://localhost:8080/swagger-ui.html`. It provides detailed information about the available endpoints, request parameters, and response formats.
 
-
-
 ## Development Opportunities
 This Messenger Application serves as a foundation for further development. Here are some development opportunities:
 - Add user profiles, avatars, and more user-specific details.
 - Improve friend management, allowing users to accept or reject friend requests.
 - Implement group chats and support for multiple users in a chat.
 - Develop a mobile app or a web frontend for a richer user experience.
-- Add localization and internationalization support for a global user base.
 - Enhance the security with additional authentication methods like two-factor authentication (2FA).
-
-Please note that while base methods have been implemented, additional functionalities related to friends and testing are pending completion due to time constraints. In tests, mock injection has been utilized to ensure code quality and functionality. I worked with Injects-mock and Mock Bean. You can see examples in repository  - https://github.com/DmitryKh02/credit.
 
 Feel free to contribute and expand the functionality of this application!
