@@ -32,11 +32,6 @@ class FriendsServiceImplTest {
     @Mock
     private UserMapper userMapper;
 
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-
     @Test
     void testAddFriend_Success() throws EntityNotFoundException {
         // Create test data

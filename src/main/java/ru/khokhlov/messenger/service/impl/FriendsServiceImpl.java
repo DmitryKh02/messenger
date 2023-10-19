@@ -17,21 +17,25 @@ public class FriendsServiceImpl implements FriendsService {
     private final UserMapper userMapper;
 
     @Override
-    public UserResponse addFriend(String biba, String boba) throws EntityNotFoundException {
+    public UserResponse addFriend(String sender, String recipient) throws EntityNotFoundException {
 
-        User userBiba = userRepository.findByNickname(biba);
-        User userBoba = userRepository.findByNickname(boba);
+        User senderUser = userRepository.findByNickname(sender);
+        User recipientUser = userRepository.findByNickname(recipient);
 
-        if (userBiba == null || userBoba == null) {
-            throw new EntityNotFoundException("User with nickname " + biba + "not found");
+        if (senderUser == null) {
+            throw new EntityNotFoundException("User with nickname " + sender + "not found");
         }
 
-        if (!(userBiba.getFriends().contains(userBoba) || userBoba.getFriends().contains(userBiba))) {
-            userBiba.addFriends(userBoba);
-            userRepository.saveAndFlush(userBiba);
+        if (recipientUser == null) {
+            throw new EntityNotFoundException("User with nickname " + recipient + "not found");
         }
 
-        return userMapper.fromUserToUSerResponse(userBiba);
+        if (!(senderUser.getFriends().contains(recipientUser) || recipientUser.getFriends().contains(senderUser))) {
+            senderUser.addFriends(recipientUser);
+            userRepository.saveAndFlush(senderUser);
+        }
+
+        return userMapper.fromUserToUSerResponse(senderUser);
     }
 
     @Override

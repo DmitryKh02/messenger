@@ -37,17 +37,25 @@ public class FriendsController {
     @PostMapping(value = "/add")
     public ResponseEntity<UserResponse> addFriend(
             @Parameter(description = "The principal user") Principal principal,
-            @Parameter(description = "Friend information") @Valid @RequestBody FriendDTO friendDTO) {
+            @Parameter(description = "Friend information") @Valid @RequestBody FriendDTO friendDTO
+    ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(friendsService.addFriend(principal.getName(), friendDTO.friend()));
     }
 
+    /**
+     * Retrieves the list of friends for the principal user.
+     *
+     * @param principal The principal user.
+     * @return A FriendsList containing the list of friends.
+     */
     @Operation(
-            summary = "Add Friend",
-            description = "Allows the user to add another user as a friend by providing their nickname."
+            summary = "Get Friends",
+            description = "Retrieves the list of friends for the principal user."
     )
     @GetMapping(value = "/get")
     public ResponseEntity<FriendsList> getFriends(
-            @Parameter(description = "The principal user") Principal principal) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(friendsService.getAllFriends(principal.getName()));
+            @Parameter(description = "The principal user") Principal principal
+    ) {
+        return ResponseEntity.status(HttpStatus.OK).body(friendsService.getAllFriends(principal.getName()));
     }
 }

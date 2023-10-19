@@ -24,7 +24,6 @@ class MailSenderImplTest {
     @Mock
     private JavaMailSender mailSender;
 
-
     @Test
     void testActivateEmail() {
         // Create a user for testing
